@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta CNPJ</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 50px;
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 15px;
+            border: none;
+            background-color: #28a745;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .result {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Consulta de CNPJ</h2>
+        <input type="text" id="cnpj" placeholder="Digite o CNPJ">
+        <button onclick="consultarCNPJ()">Consultar</button>
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        function consultarCNPJ() {
+            var cnpj = document.getElementById('cnpj').value;
+            if (cnpj) {
+                fetch('https://www.receitaws.com.br/v1/cnpj/' + cnpj)
+                    .then(response => response.json())
+                    .then(data => {
+                        var resultDiv = document.getElementById('result');
+                        if (data.status === 'OK') {
+                            resultDiv.innerHTML = `
+                                <p><strong>Nome:</strong> ${data.nome}</p>
+                                <p><strong>Fantasia:</strong> ${data.fantasia}</p>
+                                <p><strong>CNPJ:</strong> ${data.cnpj}</p>
+                                <p><strong>Atividade Principal:</strong> ${data.atividade_principal[0].text}</p>
+                                <p><strong>UF:</strong> ${data.uf}</p>
+                                <p><strong>Telefone:</strong> ${data.telefone}</p>
+                                <p><strong>Email:</strong> ${data.email}</p>
+                                <p><strong>Situação:</strong> ${data.situacao}</p>
+                                <p><strong>Bairro:</strong> ${data.bairro}</p>
+                                <p><strong>Logradouro:</strong> ${data.logradouro}</p>
+                                <p><strong>Número:</strong> ${data.numero}</p>
+                                <p><strong>CEP:</strong> ${data.cep}</p>
+                                <p><strong>Município:</strong> ${data.municipio}</p>
+                                <p><strong>Abertura:</strong> ${data.abertura}</p>
+                                <p><strong>Natureza Jurídica:</strong> ${data.natureza_juridica}</p>
+                                <p><strong>Capital Social:</strong> ${data.capital_social}</p>
+                            `;
+                        } else {
+                            resultDiv.innerHTML = `<p>${data.message}</p>`;
+                        }
+                    })
+                    .catch(error => {
+                        document.getElementById('result').innerHTML = `<p>Erro ao consultar o CNPJ: ${error.message}</p>`;
+                    });
+            } else {
+                document.getElementById('result').innerHTML = `<p>Por favor, insira um CNPJ válido.</p>`;
+            }
+        }
+    </script>
+</body>
+</html>
